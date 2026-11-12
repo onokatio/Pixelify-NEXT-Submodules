@@ -12,6 +12,7 @@
 ---
 
 ## Info
+- [Call Screen for Japanese SIMs](CallScreen/README.md)
 - For building use the build scripts `build.sh` or `build.bat`
 - This contains all the submodules if you dont want to install the whole [Pixelify Next](https://github.com/BasGame1/Pixelify-Next) module
 - You can check for updates on our telegram [group](https://t.me/PixelifyNext) or [channel](https:/t.me/Pixelifychannel) !

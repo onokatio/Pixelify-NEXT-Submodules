@@ -1,17 +1,56 @@
-def csPath = "$rootDir/CallScreen/module"
-def csOutPath = "$rootDir/CallScreen/out"
-def modProp = file("$csPath/module.prop")
-def versionLine = modProp.readLines().find { it.startsWith('version=') }
-def version = versionLine.split('=')[1]
+plugins {
+    id 'java'
+}
 
-tasks.register('buildCallScreen', Exec) {
-    commandLine 'mkdir', '-p', "$csOutPath"
+def moduleDir = file('module')
+def version = file('module/module.prop').readLines()
+        .find { it.startsWith('version=') }
+        .substring('version='.length())
+def dexArchive = layout.buildDirectory.file('callscreen.jar')
+def javaArchive = tasks.named('jar', Jar).flatMap { it.archiveFile }
+
+configurations {
+    d8
+}
+
+dependencies {
+    d8 'com.android.tools:r8:8.3.37'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 8
+}
+
+tasks.register('testSetup', JavaExec) {
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'org.pixelify.callscreen.PhenotypeTest'
+    enableAssertions = true
+}
+
+tasks.named('test') {
+    failOnNoDiscoveredTests = false
+}
+
+tasks.named('check') {
+    dependsOn 'testSetup'
+}
+
+tasks.register('dexSetup', JavaExec) {
+    dependsOn tasks.named('jar')
+    inputs.file(javaArchive)
+    outputs.file(dexArchive)
+    classpath = configurations.d8
+    mainClass = 'com.android.tools.r8.D8'
+    args '--min-api', '26', '--output', dexArchive.get().asFile, javaArchive.get().asFile
 }
 
 tasks.register('buildZip', Zip) {
- dependsOn 'buildCallScreen'
- archiveFileName = "CallScreen-v${version}.zip"
- from csPath
- destinationDirectory = file("$csOutPath")
+    dependsOn 'dexSetup'
+    archiveFileName = "CallScreen-v${version}.zip"
+    destinationDirectory = layout.projectDirectory.dir('out')
+    from moduleDir
+    from dexArchive
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
 }
-

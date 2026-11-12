@@ -1,6 +1,6 @@
 id=PixelifyCallScreen
-name=Pixelify Next Call screen
-author=BasGame1
-description=Pixelify Next Submodule focused on Call screen adn dialer features
-version=2
-versioncode=02
+name=Pixelify Next Call Screen (Japan)
+version=3
+versionCode=3
+author=BasGame1, onokatio
+description=Keeps manual Japanese Call Screen enabled on compatible system installations of Google Phone.

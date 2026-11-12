@@ -19,7 +19,7 @@ read -p "Enter your selection: " SELECTION
 case $SELECTION in
 "1") 
  red "Building Call Screen"
- ./gradlew :CallScreen:buildZip --no-configuration-cache
+ ./gradlew :CallScreen:buildZip --configure-on-demand --no-configuration-cache
  ;;
 "2")
  blue "Building GPhotos"

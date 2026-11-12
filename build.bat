@@ -21,7 +21,7 @@ set /p SELECTION="Enter your selection: "
 
 if "%SELECTION%"=="1" (
     call colors.bat red "Building Call Screen"
-    call gradlew :CallScreen:buildZip --no-configuration-cache
+    call gradlew :CallScreen:buildZip --configure-on-demand --no-configuration-cache
 ) else if "%SELECTION%"=="2" (
     call colors.bat blue "Building GPhotos"
     call gradlew :GPhotos:buildZip --no-configuration-cache
