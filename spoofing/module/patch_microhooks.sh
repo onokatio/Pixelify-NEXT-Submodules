@@ -1,33 +1,10 @@
 #!/system/bin/sh
 # Phenotype Microhooks & Direct SharedPrefs Patcher for Dialer, Call Screen & Pixel Features
-MODDIR=${0%/*}
-[ -n "$MODPATH" ] && MODDIR="$MODPATH"
-
-SQLITE_BIN=""
-for cand in \
-    "$TMPDIR/addon/sqlite3" \
-    "$TMPDIR/bin/sqlite3" \
-    "$MODPATH/addon/sqlite3" \
-    "$MODPATH/bin/sqlite3" \
-    "$MODDIR/addon/sqlite3" \
-    "$MODDIR/bin/sqlite3" \
-    "/data/adb/modules/Pixelify-Next/addon/sqlite3" \
-    "/data/adb/modules/Pixelify/addon/sqlite3" \
-    "/data/adb/modules/CallScreen/bin/sqlite3" \
-    "/system/bin/sqlite3" \
-    "/system/xbin/sqlite3" \
-    "/system/vendor/bin/sqlite3_mosey" \
-    "/vendor/bin/sqlite3_mosey" \
-    "/vendor/bin/sqlite3"; do
-    if [ -f "$cand" ]; then
-        chmod 0755 "$cand" 2>/dev/null
-        SQLITE_BIN="$cand"
-        break
-    fi
-done
-
-if [ -z "$SQLITE_BIN" ] && command -v sqlite3 >/dev/null 2>&1; then
-    SQLITE_BIN="$(command -v sqlite3)"
+MODDIR=$(dirname "$0")
+SQLITE_BIN="$MODDIR/addon/sqlite3"
+if [ ! -x "$SQLITE_BIN" ]; then
+    echo "Bundled sqlite3 is missing or not executable. Reinstall Pixelify Spoofing." >&2
+    return 1 2>/dev/null || exit 1
 fi
 
 DB_PATHS="/data/data/com.google.android.gms/databases/phenotype.db /data/user_de/0/com.google.android.gms/databases/phenotype.db /data/data/com.google.android.dialer/databases/phenotype.db /data/user_de/0/com.google.android.dialer/databases/phenotype.db"
@@ -50,7 +27,6 @@ patch_flag() {
     for PKG in $DIALER_PKGS; do
         for DB in $DB_PATHS; do
             if [ -f "$DB" -a -n "$SQLITE_BIN" ]; then
-                chmod 0666 "$DB" 2>/dev/null
                 "$SQLITE_BIN" "$DB" "UPDATE Flags SET boolVal = $BVAL WHERE packageName='$PKG' AND name='$FLAG';" 2>/dev/null || true
                 "$SQLITE_BIN" "$DB" "DELETE FROM FlagOverrides WHERE packageName='$PKG' AND name='$FLAG';" 2>/dev/null || true
                 "$SQLITE_BIN" "$DB" "INSERT INTO FlagOverrides (packageName, user, name, flagType, boolVal, committed) VALUES ('$PKG', '', '$FLAG', 0, $BVAL, 0);" 2>/dev/null || true

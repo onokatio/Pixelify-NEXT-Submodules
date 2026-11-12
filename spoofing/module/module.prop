@@ -1,6 +1,6 @@
 id=PixelifySpoofing
 name=Pixelify Next - Standalone Zygisk Spoofing & WebUI
-version=v7.0
-versionCode=700000000
+version=7.0.1
+versionCode=700000001
 author=BasGame1
 description=Standalone Pixelify Next Zygisk v4 dynamic spoofing engine with WebUI per-app model selector and Phenotype microhooks status monitor.

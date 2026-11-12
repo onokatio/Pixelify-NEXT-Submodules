@@ -4,8 +4,6 @@ MODDIR=${0%/*}
 . $MODDIR/vars.sh 2>/dev/null
 . $MODDIR/utils.sh 2>/dev/null
 
-sqlite=$MODDIR/addon/sqlite3
-chmod 0755 $sqlite 2>/dev/null
 [ -f $MODDIR/system/bin/pixelify ] && chmod 0755 $MODDIR/system/bin/pixelify 2>/dev/null
 
 # --- Live Boot Logger ---
